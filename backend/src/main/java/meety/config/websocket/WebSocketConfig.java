@@ -1,5 +1,6 @@
-package meety.config;
+package meety.config.websocket;
 
+import meety.security.JwtUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -10,6 +11,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -24,6 +26,12 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    private final JwtUtil jwtUtil;
+
+    public WebSocketConfig(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     /**
      * Configure message broker with a simple in-memory broker for topics and
@@ -47,6 +55,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-chat")
+                .addInterceptors(new JwtHandshakeInterceptor(jwtUtil))
                 .setAllowedOrigins("http://localhost:4200")
                 .withSockJS();
     }
@@ -58,10 +67,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
                 StompHeaderAccessor accessor =
                         MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    String username = accessor.getFirstNativeHeader("username");
-                    if (username != null) {
-                        accessor.setUser(new UsernamePasswordAuthenticationToken(username, null));
+                    String authHeader = accessor.getFirstNativeHeader("Authorization");
+                    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                        String token = authHeader.substring(7);
+                        if (jwtUtil.validateToken(token)) {
+                            Authentication auth = jwtUtil.getAuthentication(token);
+                            accessor.setUser(auth);
+                        }
                     }
                 }
                 return message;
