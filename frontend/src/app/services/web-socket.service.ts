@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ChatMessageDto } from '../models/dtos/ChatMessageDto';
-import { environment } from '../../environments/environment.test';
+import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Observable, Observer } from 'rxjs';
 

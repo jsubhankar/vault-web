@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { PrivateChatDto } from '../models/dtos/PrivateChatDto';
-import { environment } from '../../environments/environment.test';
+import { environment } from '../../environments/environment';
 import { ChatMessageDto } from '../models/dtos/ChatMessageDto';
 
 @Injectable({
