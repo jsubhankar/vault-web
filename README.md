@@ -4,7 +4,6 @@
 
 - 💬 Internal chats and collaboration tools 
 - ☁️ Private file cloud (via `vault-cloud`)
-- 🔐 Built-in password manager
 - 🧑‍💻 User and session management
 
 ## Project Structure
