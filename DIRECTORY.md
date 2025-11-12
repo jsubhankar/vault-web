@@ -30,6 +30,7 @@
             - 📄 [UserDto.java](backend/src/main/java/vaultWeb/dtos/user/UserDto.java)
             - 📄 [UserResponseDto.java](backend/src/main/java/vaultWeb/dtos/user/UserResponseDto.java)
         - 📁 **exceptions**
+          - 📄 [VaultWebException.java](backend/src/main/java/vaultWeb/exceptions/VaultWebException.java)
           - 📄 [AdminAccessDeniedException.java](backend/src/main/java/vaultWeb/exceptions/AdminAccessDeniedException.java)
           - 📄 [AlreadyMemberException.java](backend/src/main/java/vaultWeb/exceptions/AlreadyMemberException.java)
           - 📄 [DuplicateUsernameException.java](backend/src/main/java/vaultWeb/exceptions/DuplicateUsernameException.java)

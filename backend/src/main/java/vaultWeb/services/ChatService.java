@@ -1,8 +1,10 @@
 package vaultWeb.services;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import vaultWeb.dtos.ChatMessageDto;
+import vaultWeb.exceptions.VaultWebException;
 import vaultWeb.exceptions.notfound.GroupNotFoundException;
 import vaultWeb.exceptions.notfound.UserNotFoundException;
 import vaultWeb.models.ChatMessage;
@@ -76,7 +78,7 @@ public class ChatService {
         try {
             encrypted = encryptionUtil.encrypt(dto.getContent());
         } catch (Exception e) {
-            throw new RuntimeException("Encryption failed", e);
+            throw new VaultWebException(HttpStatus.INTERNAL_SERVER_ERROR, "Encryption failed", e.getMessage(), e);
         }
 
         ChatMessage message = new ChatMessage();
@@ -120,7 +122,7 @@ public class ChatService {
         try {
             return encryptionUtil.decrypt(cipherTextBase64, ivBase64);
         } catch (Exception e) {
-            throw new RuntimeException("Decryption failed", e);
+            throw new VaultWebException(HttpStatus.INTERNAL_SERVER_ERROR, "Decryption failed", e.getMessage(), e);
         }
     }
 }

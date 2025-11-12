@@ -2,10 +2,12 @@ package vaultWeb.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import vaultWeb.dtos.PollRequestDto;
 import vaultWeb.dtos.PollResponseDto;
 import vaultWeb.exceptions.UnauthorizedException;
+import vaultWeb.exceptions.VaultWebException;
 import vaultWeb.exceptions.notfound.GroupNotFoundException;
 import vaultWeb.exceptions.notfound.NotMemberException;
 import vaultWeb.exceptions.notfound.PollNotFoundException;
@@ -155,16 +157,16 @@ public class PollService {
                 .orElseThrow(() -> new PollNotFoundException(pollId));
 
         if (!poll.getGroup().getId().equals(groupId)) {
-            throw new RuntimeException("Poll does not belong to group");
+            throw new VaultWebException(HttpStatus.NOT_FOUND, "Invalid Poll", "pollId: "+ pollId +"does not belong to groupId: "+ groupId);
         }
 
         PollOption option = poll.getOptions().stream()
                 .filter(o -> o.getId().equals(optionId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("PollOption not found in poll"));
+                .orElseThrow(() -> new VaultWebException(HttpStatus.NOT_FOUND, "Invalid Poll", "optionId: "+ optionId +" not found in pollId: "+ pollId));
 
         if (pollVoteRepository.existsByOption_PollAndUser(poll, user)) {
-            throw new RuntimeException("User has already voted in this poll");
+            throw new VaultWebException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid Poll", "User has already voted in pollId: "+ pollId);
         }
 
         PollVote vote = PollVote.builder()
@@ -196,7 +198,7 @@ public class PollService {
                 .orElseThrow(() -> new PollNotFoundException(pollId));
 
         if (!poll.getGroup().getId().equals(groupId)) {
-            throw new RuntimeException("Poll does not belong to group");
+            throw new VaultWebException(HttpStatus.NOT_FOUND, "Invalid Poll", "pollId: "+ pollId +" does not belong to groupId: "+ groupId);
         }
 
         if (!poll.getAuthor().getId().equals(user.getId())) {
@@ -239,7 +241,7 @@ public class PollService {
                 .orElseThrow(() -> new PollNotFoundException(pollId));
 
         if (!poll.getGroup().getId().equals(groupId)) {
-            throw new RuntimeException("Poll does not belong to group");
+            throw new VaultWebException(HttpStatus.NOT_FOUND, "Invalid Poll", "pollId: "+ pollId +" does not belong to groupId: "+ groupId);
         }
 
         if (!poll.getAuthor().getId().equals(user.getId())) {

@@ -20,6 +20,16 @@ import java.nio.file.AccessDeniedException;
 public class GlobalExceptionHandler {
 
     /**
+     * Handles {@link VaultWebException}
+     */
+    @ExceptionHandler(VaultWebException.class)
+    public ResponseEntity<String> handleVaultWebException(VaultWebException ex) {
+        return ResponseEntity
+                .status(ex.getHttpStatus())
+                .body(ex.getErrorType() +" :: "+ ex.getMessage());
+    }
+
+    /**
      * Handles UserNotFoundException and returns 404 Not Found.
      */
     @ExceptionHandler(UserNotFoundException.class)

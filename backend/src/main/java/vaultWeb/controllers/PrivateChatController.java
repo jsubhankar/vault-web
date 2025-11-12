@@ -3,12 +3,14 @@ package vaultWeb.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vaultWeb.dtos.ChatMessageDto;
 import vaultWeb.dtos.PrivateChatDto;
+import vaultWeb.exceptions.VaultWebException;
 import vaultWeb.models.ChatMessage;
 import vaultWeb.models.PrivateChat;
 import vaultWeb.repositories.ChatMessageRepository;
@@ -71,7 +73,7 @@ public class PrivateChatController {
                                 message.getSender().getUsername()
                         );
                     } catch (Exception e) {
-                        throw new RuntimeException("Decryption failed", e);
+                        throw new VaultWebException(HttpStatus.INTERNAL_SERVER_ERROR, "Decryption failed", e.getMessage(), e);
                     }
                 })
                 .toList();
