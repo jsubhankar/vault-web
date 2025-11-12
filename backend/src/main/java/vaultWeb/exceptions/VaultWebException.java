@@ -3,7 +3,7 @@ package vaultWeb.exceptions;
 import org.springframework.http.HttpStatus;
 
 /**
- * Thrown when a user tries to register with a username that already exists.
+ * Thrown when any unexpected action performed.
  */
 public class VaultWebException extends RuntimeException {
 
@@ -11,7 +11,7 @@ public class VaultWebException extends RuntimeException {
     private String errorType;
 
     /**
-     * Constructor
+     * Constructs a new VaultWebException for specific HttpStatus, String, String
      *
      * @param httpStatus - the constant value from {@link HttpStatus}
      * @param errorType - summarization of the error
@@ -25,12 +25,12 @@ public class VaultWebException extends RuntimeException {
     }
 
     /**
-     * Constructor
+     * Constructs a new VaultWebException for specific HttpStatus, String, String, Throwable
      *
      * @param httpStatus - the constant value from {@link HttpStatus}
      * @param errorType - summarization of the error
      * @param errorMessage - detail description of the error
-     * @param cause - the cause, which saved for later retrieval
+     * @param cause - the cause details, which saved for later retrieval from {@link Throwable}
      */
 
     public VaultWebException(HttpStatus httpStatus, String errorType, String errorMessage, Throwable cause) {
@@ -40,9 +40,7 @@ public class VaultWebException extends RuntimeException {
     }
 
     /**
-     *
      * Getter
-     *
     */
 
     public HttpStatus getHttpStatus() { return httpStatus; }
